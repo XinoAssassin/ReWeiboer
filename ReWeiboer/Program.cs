@@ -15,7 +15,7 @@ namespace ReWeiboer
         {
             ReadConfig.Readconfig();
             Auth.SetUserCredentials(ReadConfig.ConsumerKey, ReadConfig.ConsumerSecret, ReadConfig.AccessToken, ReadConfig.AccessTokenSecret);
-            System.Timers.Timer timer = new System.Timers.Timer(ReadConfig.TimerInterval)
+            /*System.Timers.Timer timer = new System.Timers.Timer(ReadConfig.TimerInterval)
             {
                 Enabled = true,
                 AutoReset = true
@@ -25,7 +25,9 @@ namespace ReWeiboer
             {
                 Func.PublishTweet();
             }
+            */
 
+            Func.PublishTweet();
             Console.ReadKey();
         }
 
