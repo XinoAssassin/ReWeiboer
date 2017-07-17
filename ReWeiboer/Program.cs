@@ -14,7 +14,7 @@ namespace ReWeiboer
             {
                 Directory.CreateDirectory(Environment.CurrentDirectory + "\\temp");
             }
-            /*System.Timers.Timer timer = new System.Timers.Timer(ReadConfig.TimerInterval)
+            System.Timers.Timer timer = new System.Timers.Timer(ReadConfig.TimerInterval)
             {
                 Enabled = true,
                 AutoReset = true
@@ -23,8 +23,8 @@ namespace ReWeiboer
             void RunPublish(object source, System.Timers.ElapsedEventArgs e)
             {
                 Func.ReWeibo();
-            }*/
-            Func.ReWeibo();
+            }
+            
             Console.ReadKey();
 
         }
