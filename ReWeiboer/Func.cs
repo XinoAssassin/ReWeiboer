@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Tweetinvi;
+using Newtonsoft.Json.Linq;
 using System.Net;
 using System.IO;
 
+
 namespace ReWeiboer
 {
-    public class Func
+    class Func
     {
         public static string ReadUserTimeLine(string id)
         {
             string url = "http://api.t.sina.com.cn/statuses/user_timeline/+" + id + ".json?source=2849184197&count=1";
-
             HttpWebRequest hwr = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse response = (HttpWebResponse)hwr.GetResponse();
             string jsonText = "";
+
             using (StreamReader sr = new StreamReader(response.GetResponseStream()))
             {
                 jsonText = sr.ReadToEnd();
@@ -27,45 +27,49 @@ namespace ReWeiboer
             return jsonText;
         }
 
-        public static void WriteToLocal(string id)
-        {
-            File.WriteAllText(Environment.CurrentDirectory + "\\" + id + "_latest.json", ReadUserTimeLine(id));
-
-        }
-
         public static string ReadLocalJson(string id)
         {
+            string weiboid = "";
             string jsonLocal = "";
-            if (File.Exists(Environment.CurrentDirectory + "\\" + id + "_latest.json"))
+            if (File.Exists(Environment.CurrentDirectory + "\\temp\\" + id + "_local.json"))
             {
-                using (StreamReader sr1 = new StreamReader(Environment.CurrentDirectory + id + "_latest.json"))
+                using (StreamReader sr = new StreamReader(Environment.CurrentDirectory + "\\temp\\" + id + "_local.json"))
                 {
-                    jsonLocal = sr1.ReadToEnd();
-                    sr1.Close();
+                    jsonLocal = sr.ReadToEnd();
                 }
+                JArray weibo = JArray.Parse(jsonLocal);
+                weiboid = weibo[0]["id"].ToString();
             }
-            return jsonLocal;
+            else
+            {
+                File.WriteAllText(Environment.CurrentDirectory + "\\temp\\" + id + "_local.json", ReadUserTimeLine(id));
+                weiboid = "";
+            }
+
+            return weiboid;
+
         }
 
         public static bool IsNewWeibo(string id)
         {
-            if (ReadUserTimeLine(id) == ReadLocalJson(id))
+            JArray weibo = JArray.Parse(ReadUserTimeLine(id));
+            string weiboid = weibo[0]["id"].ToString();
+            if (weiboid == ReadLocalJson(id))
             {
                 return false;
             }
             else
             {
-                WriteToLocal(id);
+                File.WriteAllText(Environment.CurrentDirectory + "\\temp\\" + id + "_local.json", ReadUserTimeLine(id));
                 return true;
             }
-
         }
 
-        public static void PublishTweet()
+        public static void ReWeibo()
         {
             foreach (string id in ReadConfig.Usersid)
             {
-                if (IsNewWeibo(id) == true)
+                if (IsNewWeibo(id))
                 {
                     JArray weibo = JArray.Parse(ReadUserTimeLine(id));
                     string weiboText = weibo[0]["text"].ToString();
@@ -76,7 +80,7 @@ namespace ReWeiboer
                         if (!(weibo[0]["original_pic"] == null))
                         {
                             GetImage(weibo[0]["original_pic"].ToString());
-                            byte[] buff = File.ReadAllBytes(Environment.CurrentDirectory + "\\tmp.pic");
+                            byte[] buff = File.ReadAllBytes(Environment.CurrentDirectory + "\\temp\\tmp.pic");
                             var media = Upload.UploadImage(buff);
                             Tweet.PublishTweet(tweet, new Tweetinvi.Parameters.PublishTweetOptionalParameters { Medias = new List<Tweetinvi.Models.IMedia> { media } });
                             Console.WriteLine(tweet);
@@ -85,8 +89,7 @@ namespace ReWeiboer
                         else
                         {
                             Tweet.PublishTweet(tweet);
-                            Console.WriteLine(tweet);
-                            GC.Collect();
+
                         }
                     }
                     else
@@ -95,17 +98,17 @@ namespace ReWeiboer
                     }
                 }
                 else
-                { GC.Collect(); }
+                {
+                    GC.Collect();
+                }
             }
-
         }
-
         public static void GetImage(string url)
         {
             HttpWebRequest hwr = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse response = (HttpWebResponse)hwr.GetResponse();
             System.IO.Stream stream = response.GetResponseStream();
-            FileStream fs = new FileStream(Environment.CurrentDirectory + "\\tmp.pic", FileMode.OpenOrCreate, FileAccess.Write);
+            FileStream fs = new FileStream(Environment.CurrentDirectory + "\\temp\\tmp.pic", FileMode.OpenOrCreate, FileAccess.Write);
             byte[] buff = new byte[response.ContentLength];
             int i = 0;
             while ((i = stream.Read(buff, 0, buff.Length)) > 0)

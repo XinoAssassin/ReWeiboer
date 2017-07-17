@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tweetinvi;
 using System.IO;
-using System.Net;
 
 namespace ReWeiboer
 {
@@ -15,6 +10,10 @@ namespace ReWeiboer
         {
             ReadConfig.Readconfig();
             Auth.SetUserCredentials(ReadConfig.ConsumerKey, ReadConfig.ConsumerSecret, ReadConfig.AccessToken, ReadConfig.AccessTokenSecret);
+            if (!Directory.Exists(Environment.CurrentDirectory + "\\temp"))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + "\\temp");
+            }
             /*System.Timers.Timer timer = new System.Timers.Timer(ReadConfig.TimerInterval)
             {
                 Enabled = true,
@@ -23,12 +22,11 @@ namespace ReWeiboer
             timer.Elapsed += new System.Timers.ElapsedEventHandler(RunPublish);
             void RunPublish(object source, System.Timers.ElapsedEventArgs e)
             {
-                Func.PublishTweet();
-            }
-            */
-
-            Func.PublishTweet();
+                Func.ReWeibo();
+            }*/
+            Func.ReWeibo();
             Console.ReadKey();
+
         }
 
     }
