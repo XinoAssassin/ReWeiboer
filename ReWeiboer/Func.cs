@@ -74,7 +74,8 @@ namespace ReWeiboer
                     JArray weibo = JArray.Parse(ReadUserTimeLine(id));
                     string weiboText = weibo[0]["text"].ToString();
                     string weiboUser = weibo[0]["user"]["name"].ToString();
-                    string tweet = '@' + weiboUser + '：' + weiboText;
+                    string weiboUserLink = weibo[0]["user"]["id"].ToString();
+                    string tweet = '@' + weiboUser + '：' + weiboText + '\n' + "From: http://weibo.com/" + weiboUserLink;
                     if (weibo[0]["retweeted_status"] == null)
                     {
                         if (!(weibo[0]["original_pic"] == null))
@@ -89,6 +90,7 @@ namespace ReWeiboer
                         else
                         {
                             Tweet.PublishTweet(tweet);
+                            Console.WriteLine(tweet);
 
                         }
                     }
@@ -101,6 +103,9 @@ namespace ReWeiboer
                 {
                     GC.Collect();
                 }
+
+                System.Threading.Thread.Sleep(2000);
+                
             }
         }
         public static void GetImage(string url)
