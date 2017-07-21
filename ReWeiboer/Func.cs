@@ -85,7 +85,6 @@ namespace ReWeiboer
                             var media = Upload.UploadImage(buff);
                             Tweet.PublishTweet(tweet, new Tweetinvi.Parameters.PublishTweetOptionalParameters { Medias = new List<Tweetinvi.Models.IMedia> { media } });
                             Console.WriteLine(tweet);
-                            GC.Collect();
                         }
                         else
                         {

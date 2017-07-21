@@ -11,6 +11,7 @@ namespace ReWeiboer
         public static string ConsumerSecret;
         public static string AccessToken;
         public static string AccessTokenSecret;
+        public static bool IsConsoleHide;
 
         public static void Readconfig()
         {
@@ -26,6 +27,17 @@ namespace ReWeiboer
             ConsumerSecret = ConfigurationManager.AppSettings["ConsumerSecret"];
             AccessToken = ConfigurationManager.AppSettings["AccessToken"];
             AccessTokenSecret = ConfigurationManager.AppSettings["AccessTokenSecret"];
+
+            string isConsoleHide = ConfigurationManager.AppSettings["HideConsole"];
+            if (isConsoleHide.ToLower() == "true")
+            {
+                IsConsoleHide = true;
+            }
+            else
+            {
+                IsConsoleHide = false;
+            }
+
 
         }
 

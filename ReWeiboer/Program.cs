@@ -15,12 +15,17 @@ namespace ReWeiboer
         static void Main(string[] args)
         {
             Console.Title = "ReWeiboer";
-            IntPtr intptr = FindWindow("ConsoleWindowClass", "ReWeiboer");
-            if (intptr != IntPtr.Zero)
-            {
-                ShowWindow(intptr, 0);
-            }
             ReadConfig.Readconfig();
+            if (ReadConfig.IsConsoleHide == true)
+            {
+                IntPtr intptr = FindWindow("ConsoleWindowClass", "ReWeiboer");
+                if (intptr != IntPtr.Zero)
+                {
+                    ShowWindow(intptr, 0);
+                }
+
+            }
+
             Auth.SetUserCredentials(ReadConfig.ConsumerKey, ReadConfig.ConsumerSecret, ReadConfig.AccessToken, ReadConfig.AccessTokenSecret);
             if (!Directory.Exists(Environment.CurrentDirectory + "\\temp"))
             {
@@ -31,7 +36,9 @@ namespace ReWeiboer
                 Enabled = true,
                 AutoReset = true
             };
+            
             timer.Elapsed += new System.Timers.ElapsedEventHandler(RunPublish);
+            timer.Start();
             Func.ReWeibo();
             void RunPublish(object source, System.Timers.ElapsedEventArgs e)
             {
