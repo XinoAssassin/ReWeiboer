@@ -93,10 +93,7 @@ namespace ReWeiboer
 
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
+ 
                 }
                 else
                 {

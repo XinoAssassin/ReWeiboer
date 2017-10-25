@@ -1,7 +1,7 @@
-# ReWeiboer
+#ReWeiboer
 
 配置文件为同目录下的app.config
 
-1. 在 apps.twitter.com 建立自己的新应用并将 ConsumerKey, Secret; AccessToken,Key 复制到app.config 中的对应位置
+1. 在 (Twitter Application Management)[https://apps.twitter.com] 建立自己的新应用并将 ConsumerKey, Secret; AccessToken,Key 复制到app.config 中的对应位置 
 2. 修改自己所需关注的微博ID在同一引号内以逗号分隔
 3. 修改自己所需的转发间隔
